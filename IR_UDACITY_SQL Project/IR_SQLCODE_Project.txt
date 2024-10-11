@@ -1,0 +1,49 @@
+### **1. Which artists have generated the most revenue in total sales?**
+SELECT
+ar.Name AS Artist,
+SUM(ii.UnitPrice * il.Quantity) AS Total_Revenue FROM
+artist ar JOIN
+album al ON ar.ArtistId = al.ArtistId
+JOIN?track t ON al.AlbumId = t.AlbumId
+JOIN?invoiceline il ON t.TrackId = il.TrackId
+GROUP BY ar.Name ORDER BY
+Total_Revenue DESC;
+ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+### **2. What are the top 5 most popular genres based on the number of tracks 
+sold?**
+SELECT
+g.Name AS Genre,
+COUNT(il.InvoiceLineId) AS Tracks_Sold FROM
+genre g JOIN
+track t ON g.GenreId = t.GenreId JOIN
+invoiceline il ON t.TrackId = il.TrackId GROUP BY
+g.Name ORDER BY
+Tracks_Sold DESC LIMIT 5;
+ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+### **3. How does the sales performance vary by employee?**
+**Query:** ```sql SELECT
+e.FirstName || ' ' || e.LastName AS Employee,
+SUM(i.Total) AS Total_Sales FROM
+employee e JOIN
+customer c ON e.EmployeeId = c.SupportRepId JOIN
+invoice i ON c.CustomerId = i.CustomerId GROUP BY
+e.EmployeeId ORDER BY
+Total_Sales DESC;
+ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+ÑÑ
+*** 4. Top 5 customers based on their total spending.****
+
+WITH CustomerSpending AS (
+    SELECT
+        c.CustomerId,
+        CONCAT(c.FirstName, ' ', c.LastName) AS FullName,
+        SUM(i.Total) AS TotalSpent
+    FROM Invoice i
+    JOIN Customer c ON i.CustomerId = c.CustomerId
+    GROUP BY c.CustomerId, c.FirstName, c.LastName)
+SELECT
+    FullName,
+    TotalSpent
+FROM CustomerSpending
+ORDER BY TotalSpent DESC
+LIMIT 5;
